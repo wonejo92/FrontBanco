@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {login} from '../modelo/login';
 
 @Component({
   selector: 'app-home',
@@ -6,7 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-
+  login: login = new login();
   constructor() {}
 
+  logearse() {
+    console.log(this.login);
+  }
 }

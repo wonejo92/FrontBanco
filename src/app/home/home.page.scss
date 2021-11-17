@@ -1,27 +1,17 @@
-#container {
-  text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+.logo{
+  margin-top: 20%;
+  img{
+    height: 110px;
+  }
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+.form{
+  margin-top: 20%;
+  ion-item{
+    border-radius: 5px;
+    border-color: rgb(201,201,201);
+    border-width: 2px;
+    border-style: solid;
+    margin-bottom: 10px;
+  }
 }
