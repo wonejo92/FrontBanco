@@ -11,6 +11,10 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'cliet-view',
+    loadChildren: () => import('./pages/cliet-view/cliet-view.module').then( m => m.ClietViewPageModule)
+  },
 ];
 
 @NgModule({

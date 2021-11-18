@@ -1,0 +1,7 @@
+{
+  "/": {
+    "target": "http://192.168.18.120:8000/api",
+    "secure": false,
+    "logLevel": "debug"
+  }
+}
