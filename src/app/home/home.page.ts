@@ -25,6 +25,7 @@ export class HomePage {
       }).toPromise().then(data=>data !== undefined ? data['status'] : 'error');
       console.log(datos);
       if(datos==='successful'){
+        localStorage.setItem('cedula',this.login.cedula);
         this.route.navigate(['cliet-view']);
       }else {
         this.presentToast();}

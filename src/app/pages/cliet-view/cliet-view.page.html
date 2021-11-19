@@ -1,9 +1,55 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Home</ion-title>
+    <ion-title>TRANSFERENCIA</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <img src="assets/frick.png" >
 
+  <div class="form">
+    <!-- Item with badge on left and right -->
+    <ion-item>
+      <ion-label>Cedula</ion-label>
+      <ion-badge slot="end" color="dark">{{cedula}}</ion-badge>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Banco Destino</ion-label>
+      <ion-select [(ngModel)]="transferencia.institucion_destino">
+        <ion-select-option value="JEP">JEP</ion-select-option>
+        <ion-select-option value="BANCO DEL AUSTRO">AUSTRO</ion-select-option>
+        <ion-select-option value="BANCO PICHINCHA">PICHINCHA</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Cuenta Origen</ion-label>
+      <ion-badge slot="end" color="dark">{{cuenta}}</ion-badge>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Cuenta Destino</ion-label>
+
+      <ion-input slot="end" [(ngModel)]="transferencia.destino"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Monto</ion-label>
+      <ion-label slot="end">$</ion-label>
+      <ion-input slot="end" [(ngModel)]="transferencia.monto"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Motivo</ion-label>
+      <br>
+    </ion-item>
+
+    <ion-item>
+      <ion-input placeholder="Netflix" [(ngModel)]="transferencia.motivo"></ion-input>
+    </ion-item>
+    <br>
+    <ion-button expand="block" color="warning" (click)="transaccion()">Realizar Transaccion</ion-button>
+
+  </div>
 </ion-content>
