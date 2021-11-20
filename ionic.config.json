@@ -6,8 +6,8 @@
   "type": "angular",
   "proxies": [
     {
-      "path": "/api",
-      "proxyUrl": "http://192.168.18.120:8000/api"
+      "path": "/mule",
+      "proxyUrl": "http://192.168.2.27:8081/mule"
     }
   ]
 }

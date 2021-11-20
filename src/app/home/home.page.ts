@@ -17,21 +17,28 @@ export class HomePage {
   }
 
   async logearse() {
-    try {
-      const datos = await this.http.post('http://192.168.18.120:8000/api/login?cedula='
-        + this.login.cedula + '&password=' + this.login.password, {
-        cedula: this.login.cedula.toString(),
-        password: this.login.password.toString()
-      }).toPromise().then(data=>data !== undefined ? data['status'] : 'error');
-      console.log(datos);
-      if(datos==='successful'){
-        localStorage.setItem('cedula',this.login.cedula);
-        this.route.navigate(['cliet-view']);
-      }else {
-        this.presentToast();}
-    }catch (e){}
-  }
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
 
+    const urlencoded = new URLSearchParams();
+    urlencoded.append('cedula', this.login.cedula);
+    urlencoded.append('password', this.login.password);
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: urlencoded,
+    };
+
+    const datos =await fetch('http://192.168.2.27:8081/mule?cedula='+this.login.cedula+'&password='+this.login.password, requestOptions)
+      .then(response => response.text())
+      .then(result => JSON.parse(result)['status']);
+    if(datos==='successful'){
+      localStorage.setItem('cedula',this.login.cedula);
+      this.route.navigate(['cliet-view']);
+    }else {
+      this.presentToast();}
+  }
   async presentToast(){
     const toast = await this.toastCtr.create({
       message:'Credenciales Incorrectas.',
@@ -42,4 +49,3 @@ export class HomePage {
     toast.present();
   }
 }
-

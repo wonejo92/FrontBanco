@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {transferencia} from '../../modelo/transferencia';
-import {window} from "rxjs/operators";
-import {Router} from "@angular/router";
+import {window} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {ToastController} from '@ionic/angular';
 
 @Component({
   selector: 'app-cliet-view',
@@ -15,47 +16,69 @@ export class ClietViewPage implements OnInit {
   cuenta: string;
 
 
-  constructor(private http: HttpClient, private route: Router) { }
+  constructor(private http: HttpClient, private route: Router, private toastCtr: ToastController) { }
 
   ngOnInit() {
     this.cedula=localStorage.getItem('cedula');
     this.findaccount();
   }
    async findaccount(){
-    const res= await  this.http.get('http://192.168.18.120:8000/api/private/mis_cuentas?cedula='+this.cedula).toPromise();
-    this.cuenta=res['data'][0];
+     const requestOptions = {
+       method: 'GET'
+     };
+     const datos =await fetch('http://192.168.2.27:8081/mule/getcuentas?cedula_getCuenta='+this.cedula, requestOptions)
+       .then(response => response.text())
+       .then(result => JSON.parse(result))
+       .catch(error => console.log('error', error));
+     this.cuenta=datos.data[0];
   }
 
-  transaccion() {
+  async transaccion() {
     this.transferencia.cedula=this.cedula;
     this.transferencia.origen=this.cuenta;
     console.log(this.transferencia);
 
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
     const raw = JSON.stringify({
-      "cedula": this.transferencia.cedula,
-      "institucion_destino": this.transferencia.institucion_destino,
-      "origen": this.transferencia.origen,
-      "destino": this.transferencia.destino,
-      "monto": this.transferencia.monto,
-      "motivo": this.transferencia.motivo
+      cedula_transferencia: this.transferencia.cedula,
+      banco_destino: this.transferencia.institucion_destino,
+      cuenta_origen: this.transferencia.origen,
+      cuenta_destino: this.transferencia.destino,
+      monto: this.transferencia.monto,
+      motivo: this.transferencia.motivo
     });
 
-      return this.http.post(
-      'http://192.168.18.120:8000/api/private/transferencia',
-      raw,
-      {
-        headers: new HttpHeaders().set('Content-Type', 'application/json'),
-        responseType: 'json'
-      }
-    ).toPromise()
-        .then(data=>{console.log(data);});
-     this.transferencia.cedula='';
-     this.transferencia.monto=0;
-     this.transferencia.destino='';
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+    };
+    const datos =await fetch('http://192.168.2.27:8081/mule/transferencia?cedula_transferencia='+this.transferencia.cedula+'&banco_destino='+this.transferencia.institucion_destino+'&cuenta_origen='+this.transferencia.origen+'&cuenta_destino='+this.transferencia.destino+'&monto='+this.transferencia.monto+'&motivo='+this.transferencia.motivo, requestOptions)
+      .then(response => response.text())
+      .then(result => JSON.parse(result).status)
+      .catch(error => console.log('error', error));
+    if(datos==='Se realizo la transferencia correctamente'){
+      this.route.navigate(['cliet-view']);
+      this.presentToast('Se realizo la transferencia correctamente');
+    }else {
+      this.presentToast('Error en la transferencia, Verifique los datos');
+    }
   }
 
   reload(){
     new Window().location.reload();
+  }
+
+  async presentToast(mensaje: string){
+    const toast = await this.toastCtr.create({
+      message:mensaje,
+      mode:'ios',
+      duration:2000,
+      position:'top'
+    });
+    toast.present();
   }
 
 }

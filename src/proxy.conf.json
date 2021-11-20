@@ -1,6 +1,6 @@
 {
-  "/": {
-    "target": "http://192.168.18.120:8000/api",
+  "/mule": {
+    "target": "http://192.168.2.27:8081/mule",
     "secure": false,
     "logLevel": "debug"
   }
