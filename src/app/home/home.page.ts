@@ -17,31 +17,26 @@ export class HomePage {
   }
 
   async logearse() {
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
-
-    const urlencoded = new URLSearchParams();
-    urlencoded.append('cedula', this.login.cedula);
-    urlencoded.append('password', this.login.password);
-
-    const requestOptions = {
+    console.log(this.login);
+    var requestOptions = {
       method: 'POST',
-      headers: myHeaders,
-      body: urlencoded,
     };
 
-    const datos =await fetch('http://192.168.2.27:8081/mule?cedula='+this.login.cedula+'&password='+this.login.password, requestOptions)
+    const datos = await fetch('http://192.168.2.28:8081/mule/login?cedula_login='+this.login.cedula+'&banco='+this.login.banco, requestOptions)
       .then(response => response.text())
-      .then(result => JSON.parse(result)['status']);
-    if(datos==='successful'){
+      .then(result => JSON.parse(result).status)
+      .catch(error => console.log('error', error));
+    if (datos==='1'){
       localStorage.setItem('cedula',this.login.cedula);
+      localStorage.setItem('Banco',this.login.banco);
       this.route.navigate(['cliet-view']);
-    }else {
-      this.presentToast();}
+    }else{
+      this.presentToast();
+    }
   }
   async presentToast(){
     const toast = await this.toastCtr.create({
-      message:'Credenciales Incorrectas.',
+      message:'Credenciales o banco incorrecto.',
       mode:'ios',
       duration:2000,
       position:'top'

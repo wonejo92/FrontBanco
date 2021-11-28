@@ -5,6 +5,16 @@
   </div>
   <br>
   <div class="form">
+
+    <ion-item>
+      <ion-label>Banco</ion-label>
+      <ion-select [(ngModel)]="login.banco">
+        <ion-select-option value="JEP">JEP</ion-select-option>
+        <ion-select-option value="BANCO DEL AUSTRO">AUSTRO</ion-select-option>
+        <ion-select-option value="PICHINCHA">PICHINCHA</ion-select-option>
+      </ion-select>
+    </ion-item>
+
   <ion-item lines="none">
     <ion-input [(ngModel)]="login.cedula" placeholder="Cedula" ></ion-input>
   </ion-item>

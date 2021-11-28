@@ -15,11 +15,16 @@
     </ion-item>
 
     <ion-item>
+      <ion-label>Banco Origen</ion-label>
+      <ion-badge slot="end" color="dark">{{banco}}</ion-badge>
+    </ion-item>
+
+    <ion-item>
       <ion-label>Banco Destino</ion-label>
       <ion-select [(ngModel)]="transferencia.institucion_destino">
         <ion-select-option value="JEP">JEP</ion-select-option>
-        <ion-select-option value="BANCO DEL AUSTRO">AUSTRO</ion-select-option>
-        <ion-select-option value="BANCO PICHINCHA">PICHINCHA</ion-select-option>
+        <ion-select-option value="AUSTRO">AUSTRO</ion-select-option>
+        <ion-select-option value="PICHINCHA">PICHINCHA</ion-select-option>
       </ion-select>
     </ion-item>
 
@@ -50,6 +55,8 @@
     </ion-item>
     <br>
     <ion-button expand="block" color="warning" (click)="transaccion()">Realizar Transaccion</ion-button>
+    <br>
+    <ion-button expand="block" color="danger" (click)="exit()">SALIR</ion-button>
 
   </div>
 </ion-content>

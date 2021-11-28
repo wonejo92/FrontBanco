@@ -14,19 +14,21 @@ export class ClietViewPage implements OnInit {
   transferencia: transferencia = new transferencia();
   cedula: string;
   cuenta: string;
+  banco: string;
 
 
   constructor(private http: HttpClient, private route: Router, private toastCtr: ToastController) { }
 
   ngOnInit() {
     this.cedula=localStorage.getItem('cedula');
+    this.banco=localStorage.getItem('Banco');
     this.findaccount();
   }
    async findaccount(){
-     const requestOptions = {
-       method: 'GET'
+     var requestOptions = {
+       method: 'POST'
      };
-     const datos =await fetch('http://192.168.2.27:8081/mule/getcuentas?cedula_getCuenta='+this.cedula, requestOptions)
+     const datos =await  fetch('http://192.168.2.28:8081/mule/getCuenta?banco_cuenta='+this.banco+'&cedula_cuenta='+this.cedula, requestOptions)
        .then(response => response.text())
        .then(result => JSON.parse(result))
        .catch(error => console.log('error', error));
@@ -34,37 +36,41 @@ export class ClietViewPage implements OnInit {
   }
 
   async transaccion() {
+
     this.transferencia.cedula=this.cedula;
     this.transferencia.origen=this.cuenta;
     console.log(this.transferencia);
 
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-
-    const raw = JSON.stringify({
-      cedula_transferencia: this.transferencia.cedula,
-      banco_destino: this.transferencia.institucion_destino,
-      cuenta_origen: this.transferencia.origen,
-      cuenta_destino: this.transferencia.destino,
-      monto: this.transferencia.monto,
-      motivo: this.transferencia.motivo
-    });
-
-    const requestOptions = {
+    var requestOptions = {
       method: 'POST',
-      headers: myHeaders,
-      body: raw,
     };
-    const datos =await fetch('http://192.168.2.27:8081/mule/transferencia?cedula_transferencia='+this.transferencia.cedula+'&banco_destino='+this.transferencia.institucion_destino+'&cuenta_origen='+this.transferencia.origen+'&cuenta_destino='+this.transferencia.destino+'&monto='+this.transferencia.monto+'&motivo='+this.transferencia.motivo, requestOptions)
+
+    const datos = await fetch('http://192.168.2.28:8081/mule/transferencia?cedula='+this.transferencia.cedula+
+      '&institucion_origen='+this.banco+'&institucion_destino='+this.transferencia.institucion_destino+
+      '&cuenta_origen='+this.transferencia.origen+'&cuenta_destino='+this.transferencia.destino+
+      '&monto='+this.transferencia.monto, requestOptions)
       .then(response => response.text())
       .then(result => JSON.parse(result).status)
       .catch(error => console.log('error', error));
-    if(datos==='Se realizo la transferencia correctamente'){
+    console.log(datos);
+    if(datos==='Deposito Realizado'){
+      this.presentToast('Transaccion exitosa !!');
+
+      var requestOptions = {
+        method: 'POST',
+      };
+
+      fetch('http://192.168.2.28:8081/mule/send_mail?sendEmail_cedula='+this.cedula+'&sendEmail_motivo='
+        +this.transferencia.motivo+'&sendEmail_monto='+this.transferencia.monto, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
       this.route.navigate(['cliet-view']);
-      this.presentToast('Se realizo la transferencia correctamente');
     }else {
-      this.presentToast('Error en la transferencia, Verifique los datos');
+      this.presentToast('Transaccion rechasada REVISE LOS DATOS !!');
+      this.route.navigate(['cliet-view']);
     }
+
   }
 
   reload(){
@@ -81,4 +87,8 @@ export class ClietViewPage implements OnInit {
     toast.present();
   }
 
+  exit() {
+    localStorage.clear();
+    this.route.navigate(['home']);
+  }
 }
